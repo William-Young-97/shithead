@@ -7,4 +7,4 @@ def test_init():
     game = Game(deck)
     assert isinstance(game, Game)
     assert isinstance(game.deck, Deck)
-    assert get_players() == []
+    assert game.get_players() == []
