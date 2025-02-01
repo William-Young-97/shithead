@@ -1,6 +1,5 @@
 from game.deck import Deck
 from game.card import Card
-import random
 
 def test_create():
     deck = Deck()
