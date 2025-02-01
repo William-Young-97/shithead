@@ -19,6 +19,10 @@ def test_init():
 def test_deal_cards():
     deck = Deck()
     game = Game(deck)
+
+    print(game.deck.cards)
+
+    game.deal_cards()
     # check user has been dealt cards
     assert len(game.get_players()[0].get_face_down_cards()) == 3
     assert len(game.get_players()[0].get_face_up_cards()) == 3

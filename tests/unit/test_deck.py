@@ -3,7 +3,6 @@ from game.card import Card
 
 def test_create():
     deck = Deck()
-    deck.create()
     print(deck.cards)
 
     assert len(deck.cards) == 52
@@ -11,7 +10,6 @@ def test_create():
 
 def test_shuffle():
     deck = Deck()
-    deck.create()
     original_order = deck.cards.copy()
     
     deck.shuffle()
