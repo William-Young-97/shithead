@@ -4,16 +4,18 @@ from game.player import Player
 
 # Here is a good spot for an integration test to make sure that the deck is shuffled
 
+# set players is going to exist in a class outside of game. Some ui ish layer.
 
 def test_init():
     deck = Deck()
     game = Game(deck)
-    p1 = Player()
-    p2 = Player()
+
     assert isinstance(game, Game)
     assert isinstance(game.deck, Deck)
-    assert game.get_players() == [p1, p2]
+    assert len(game.get_players()) == 2
+    assert isinstance(game.get_players()[0], HumanPlayer)
+    assert isinstance(game.get_players()[1], AiPlayer)
 
-def test_set_players():
-    deck = Deck()
-    game = Game(deck)
+# def test_deal_cards():
+#     deck = Deck()
+#     game = Game(deck)
