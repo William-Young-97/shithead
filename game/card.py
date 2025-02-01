@@ -3,4 +3,7 @@ class Card:
         self.rank = rank
         self.suit = suit
         self.value = value
-        
+    
+    def __str__(self):
+        suit_symbols = {"Spades": "♠", "Hearts": "♥", "Diamonds": "♦", "Clubs": "♣"}
+        return f"{self.rank}{suit_symbols[self.suit]}"
