@@ -1,6 +1,6 @@
 from game.game import Game
 from game.deck import Deck
-from game.player import Player
+from game.player import Player, HumanPlayer, AIPlayer
 
 # Here is a good spot for an integration test to make sure that the deck is shuffled
 
@@ -14,7 +14,7 @@ def test_init():
     assert isinstance(game.deck, Deck)
     assert len(game.get_players()) == 2
     assert isinstance(game.get_players()[0], HumanPlayer)
-    assert isinstance(game.get_players()[1], AiPlayer)
+    assert isinstance(game.get_players()[1], AIPlayer)
 
 # def test_deal_cards():
 #     deck = Deck()

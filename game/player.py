@@ -13,3 +13,11 @@ class Player:
     
     def get_hand(self):
         return self.hand
+    
+class HumanPlayer(Player):
+    def __init__(self) -> None:
+        super().__init__()
+
+class AIPlayer(Player):
+    def __init__(self) -> None:
+        super().__init__()
