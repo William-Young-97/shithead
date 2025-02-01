@@ -1,4 +1,5 @@
 from game.card import Card
+import random
 
 class Deck:
     def __init__(self) -> None:
@@ -14,3 +15,10 @@ class Deck:
         for suit in suits:
             for idx, _ in enumerate(ranks):
                 self.cards.append(Card(ranks[idx], suit, values[idx]))
+
+    def shuffle(self):
+         random.shuffle(self.cards)
+    
+    # Helper methods
+    def get_card_list(self) -> list[tuple]:
+        return [(card.rank, card.suit) for card in self.cards]
