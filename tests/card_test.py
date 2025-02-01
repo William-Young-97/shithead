@@ -1,6 +1,6 @@
 from game.card import Card
 
-def test_card_creation():
+def test_init():
     card = Card("Ace", "Spades", 14)
     assert card.rank == "Ace"
     assert card.suit == "Spades"
