@@ -1,3 +1,3 @@
 class Game:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, deck) -> None:
+        self.deck = deck
