@@ -16,6 +16,14 @@ def test_init():
     assert isinstance(game.get_players()[0], HumanPlayer)
     assert isinstance(game.get_players()[1], AIPlayer)
 
-# def test_deal_cards():
-#     deck = Deck()
-#     game = Game(deck)
+def test_deal_cards():
+    deck = Deck()
+    game = Game(deck)
+    # check user has been dealt cards
+    assert len(game.get_players()[0].get_face_down_cards()) == 3
+    assert len(game.get_players()[0].get_face_up_cards()) == 3
+    assert len(game.get_players()[0].get_hand()) == 3
+    # check ai has  been dealt cards
+    assert len(game.get_players()[0].get_face_down_cards()) == 3
+    assert len(game.get_players()[0].get_face_up_cards()) == 3
+    assert len(game.get_players()[0].get_hand()) == 3
