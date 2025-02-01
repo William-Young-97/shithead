@@ -1,4 +1,4 @@
-from game.player import Player
+from game.player import Player, HumanPlayer
 from game.card import Card
 
 def test_init():
@@ -11,7 +11,7 @@ def test_init():
 
 def test_visible_state_representation():
     # Setup player with cards
-    player = Player()
+    player = HumanPlayer()
     player.hand = [Card("A", "Spades", 14), Card("2", "Hearts", 2),  Card("3", "Hearts", 3)]
     player.face_up_cards = [Card("10", "Diamonds", 10), Card("10", "Clubs", 10), Card("10", "Spades", 10)]
     player.face_down_cards = [Card("5", "Clubs", 5), Card("5", "Diamonds", 5), Card("5", "Hearts", 5)]
