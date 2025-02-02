@@ -30,5 +30,11 @@ def test_deal_cards():
     assert len(game.get_players()[0].get_face_up_cards()) == 3
     assert len(game.get_players()[0].get_hand()) == 3
 
+# when i implement turns i'll extend this to make sure we circle the array of
+# current players
 def test_get_current_player():
-    
+    deck = Deck()
+    game = Game(deck)
+    c = game.get_current_player()
+
+    assert c == 0
