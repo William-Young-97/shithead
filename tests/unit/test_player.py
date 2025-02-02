@@ -2,6 +2,8 @@ from game.player import Player, HumanPlayer
 from game.card import Card
 from game.deck import Deck
 from game.game import Game
+from unittest.mock import patch
+
 
 def test_init():
     player = Player()
@@ -29,21 +31,25 @@ def test_visible_state_representation():
 def test_user_play_card():
     deck = Deck()
     game = Game(deck)
-    deal_cards_in_order(game.deck, game.players)
-    print(game.players[0].get_visible_state())
-    game.current_player.play_card()
+    
+    card = Card("8", "Diamonds", 8)
 
-    assert len(game.current_player.hand) == 2
-    assert game.pickup_pile.top() == Card("8", "Diamonds", 8)
+    game.current_player.hand = [card]
+    print(game.players[0].get_visible_state())
+    with patch("builtins.input", return_value="0"):
+        game.current_player.play_card(game.discard_pile)
+
+    assert len(game.current_player.hand) == 0
+    assert game.pile[-1] == card
 
 
 
 # helpers
-def deal_cards_in_order(deck, players):
-    for player in players:
-        for _ in range(3):
-            player.face_down_cards.append(deck.cards.pop())
-        for _ in range(3):
-            player.face_up_cards.append(deck.cards.pop())
-        for _ in range(3):
-            player.hand.append(deck.cards.pop())
+# def deal_cards_in_order(deck, players):
+#     for player in players:
+#         for _ in range(3):
+#             player.face_down_cards.append(deck.cards.pop())
+#         for _ in range(3):
+#             player.face_up_cards.append(deck.cards.pop())
+#         for _ in range(3):
+#             player.hand.append(deck.cards.pop())
