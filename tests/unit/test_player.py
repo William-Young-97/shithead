@@ -1,7 +1,5 @@
-from game.player import Player, HumanPlayer
+from game.player import Player, HumanPlayer, AIPlayer
 from game.card import Card
-from game.deck import Deck
-from game.game import Game
 from unittest.mock import patch
 
 
@@ -28,19 +26,26 @@ def test_visible_state_representation():
     assert visible["face_up"] == ["10♦", "10♣", "10♠"]
     assert visible["face_down"] == ["???", "???", "???"]
 
-def test_user_play_card():
-    deck = Deck()
-    game = Game(deck)
+def test_human_player_play_card():
+    player = HumanPlayer()
+    player.hand = [Card("8", "Diamonds", 8), Card("2", "Spades", 2)]
+    discard_pile = [Card("7", "Hearts", 7)]
     
-    card = Card("8", "Diamonds", 8)
+    with patch("builtins.input", return_value="0"):  # Mock input
+        player.play_card(discard_pile)
+    
+    assert len(player.hand) == 1
+    assert discard_pile[-1].rank == "8"
 
-    game.current_player.hand = [card]
-    print(game.players[0].get_visible_state())
-    with patch("builtins.input", return_value="0"):
-        game.current_player.play_card(game.discard_pile)
-
-    assert len(game.current_player.hand) == 0
-    assert game.pile[-1] == card
+def test_ai_player_play_card():
+    player = AIPlayer()
+    player.hand = [Card("8", "Diamonds", 8), Card("2", "Spades", 2)]
+    discard_pile = [Card("7", "Hearts", 7)]
+    
+    player.play_card(discard_pile)
+    
+    assert len(player.hand) == 1
+    assert discard_pile[-1].rank == "8"
 
 
 
