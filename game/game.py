@@ -23,7 +23,7 @@ class Game:
     
     # hard coded for until turns implemented
     def get_current_player(self):
-        return 0
+        return self.players[0]
 
     # helpers
     def get_players(self):

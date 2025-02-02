@@ -37,4 +37,4 @@ def test_get_current_player():
     game = Game(deck)
     c = game.get_current_player()
 
-    assert c == 0
+    assert c == game.players[0]
