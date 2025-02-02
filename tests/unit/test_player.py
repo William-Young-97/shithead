@@ -1,5 +1,7 @@
 from game.player import Player, HumanPlayer
 from game.card import Card
+from game.deck import Deck
+from game.game import Game
 
 def test_init():
     player = Player()
@@ -23,3 +25,25 @@ def test_visible_state_representation():
     assert visible["hand"] == ["A♠", "2♥", "3♥"]
     assert visible["face_up"] == ["10♦", "10♣", "10♠"]
     assert visible["face_down"] == ["???", "???", "???"]
+
+def test_user_play_card():
+    deck = Deck()
+    game = Game(deck)
+    deal_cards_in_order(game.deck, game.players)
+    print(game.players[0].get_visible_state())
+    game.current_player.play_card()
+
+    assert len(game.current_player.hand) == 2
+    assert game.pickup_pile.top() == Card("8", "Diamonds", 8)
+
+
+
+# helpers
+def deal_cards_in_order(deck, players):
+    for player in players:
+        for _ in range(3):
+            player.face_down_cards.append(deck.cards.pop())
+        for _ in range(3):
+            player.face_up_cards.append(deck.cards.pop())
+        for _ in range(3):
+            player.hand.append(deck.cards.pop())

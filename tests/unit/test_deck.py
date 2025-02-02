@@ -3,8 +3,6 @@ from game.card import Card
 
 def test_create():
     deck = Deck()
-    print(deck.cards)
-
     assert len(deck.cards) == 52
     assert isinstance(deck.cards[0], Card)
 
