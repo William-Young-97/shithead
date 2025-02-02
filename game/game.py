@@ -8,6 +8,7 @@ class Game:
         for _ in range(num_players - 1):
             self.players.append(AIPlayer())
         self.current_player = self.get_current_player()
+        self.discard_pile = []
     
     def deal_cards(self):
         # Populate all players facedown, facecards, and then hand
