@@ -3,7 +3,7 @@ class Player:
         self.face_down_cards = []
         self.face_up_cards = []
         self.hand = []
-
+        self.source = self.current_source()
     
     def get_face_down_cards(self):
         return self.face_down_cards
@@ -41,6 +41,15 @@ class Player:
     def pickup_discard_pile(self, discard_pile):
         self.hand += discard_pile
         discard_pile = []
+
+    def current_source(self):
+        if self.hand:
+            return self.hand
+        elif self.face_up_cards:
+            return self.face_up_cards
+        else:
+            return self.face_down_cards
+
 
 class HumanPlayer(Player):
     def __init__(self) -> None:

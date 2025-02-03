@@ -73,6 +73,7 @@ def test_current_source():
     player.hand = [Card("9", "Hearts", 9)]
     c = player.current_source()
 
+    print(c)
     assert c == player.hand
 
     player.hand = []
@@ -84,6 +85,7 @@ def test_current_source():
     c = player.current_source()
 
     assert c == player.face_down_cards
+    
 # helpers
 # def deal_cards_in_order(deck, players):
 #     for player in players:
