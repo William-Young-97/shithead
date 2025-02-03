@@ -47,8 +47,15 @@ def test_ai_player_play_card():
     assert len(player.hand) == 1
     assert discard_pile[-1].rank == "8"
 
+def test_player_draw_card():
+    player = Player()
+    player.hand = [Card("8", "Diamonds", 8), Card("2", "Spades", 2)]
+    deck = [Card("7", "Hearts", 7)]
 
+    player.draw(deck)
 
+    assert len(player.hand) == 3
+    assert player.hand[-1].rank == 7
 # helpers
 # def deal_cards_in_order(deck, players):
 #     for player in players:
