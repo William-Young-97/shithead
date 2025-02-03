@@ -57,6 +57,16 @@ def test_player_draw_card():
     assert len(player.hand) == 3
     assert player.hand[-1].rank == "7"
 
+def test_pickup_discard_pile():
+    player = Player()
+    player.hand = [Card("8", "Diamonds", 8), Card("4", "Spades", 4)]
+    discard_pile = [Card("9", "Hearts", 9)]
+    player.pickup_discard_pile(discard_pile)
+
+    assert len(player.hand) == 3
+    assert player.hand[-1].rank == "9"
+
+
 # helpers
 # def deal_cards_in_order(deck, players):
 #     for player in players:
