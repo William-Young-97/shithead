@@ -55,7 +55,8 @@ def test_player_draw_card():
     player.draw(deck)
 
     assert len(player.hand) == 3
-    assert player.hand[-1].rank == 7
+    assert player.hand[-1].rank == "7"
+
 # helpers
 # def deal_cards_in_order(deck, players):
 #     for player in players:

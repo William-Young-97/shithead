@@ -4,7 +4,7 @@ class Player:
         self.face_up_cards = []
         self.hand = []
 
-    # Helper methods
+    
     def get_face_down_cards(self):
         return self.face_down_cards
     
@@ -35,6 +35,9 @@ class Player:
         top_card = discard_pile[-1]
         return card.value >= top_card.value
     
+    def draw(self, deck):
+        self.hand.append(deck.pop())
+
 class HumanPlayer(Player):
     def __init__(self) -> None:
         super().__init__()
