@@ -37,6 +37,10 @@ class Player:
     
     def draw(self, deck):
         self.hand.append(deck.pop())
+    
+    def pickup_discard_pile(self, discard_pile):
+        self.hand += discard_pile
+        discard_pile = []
 
 class HumanPlayer(Player):
     def __init__(self) -> None:
