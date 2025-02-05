@@ -23,6 +23,12 @@ class Game:
             for _ in range(3):
                 player.hand.append(self.deck.cards.pop())
     
+    def _check_win_condition(self) -> bool:
+        for player in self.players:
+            if not player.hand and not player.face_up_cards and not player.face_down_cards:
+                return True
+        return False
+    
     # hard coded for until turns implemented
     def get_current_player(self):
         return self.players[0]
