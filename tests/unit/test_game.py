@@ -31,3 +31,11 @@ def test_get_current_player():
     c = game.get_current_player()
 
     assert c == game.players[0]
+
+def test_win_condition():
+    game = Game(num_players=2)
+    game.players[0].hand = []
+    game.players[0].face_up_cards = []
+    game.players[0].face_down_cards = []
+    
+    assert game._check_win_condition() is True
