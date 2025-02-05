@@ -18,7 +18,7 @@ class Player:
             return self.face_down_cards
         return None
 
-    def play_card(self, discard_pile):
+    def play_card(self, discard_pile, deck):
         current_source = self.current_source 
         if not current_source:
             raise ValueError("No cards available to play")
@@ -34,8 +34,14 @@ class Player:
             raise(ValueError)
         else:
             discard_pile.append(played_card)
+
+            self._refill_hand(deck)
             return played_card
         
+    def _refill_hand(self, deck):
+        if self.hand and len(self.hand) < 3 and deck.cards:
+            while len(self.hand) < 3 and deck.cards:
+                self.hand.append(deck.cards.pop())
 
     def get_name(self):
         # impl in subclass
