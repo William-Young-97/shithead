@@ -1,8 +1,11 @@
+import random
+
 class Player:
     def __init__(self) -> None:
         self.face_down_cards = []
         self.face_up_cards = []
         self.hand = []
+        self.name = None
     
     @property
     def current_source(self):
@@ -34,8 +37,12 @@ class Player:
             return played_card
         
 
+    def get_name(self):
+        # impl in subclass
+        raise NotImplementedError
+
     def _select_card(self) -> int:
-        """Card selection strategy (implemented in subclasses)"""
+        # impl in subclass
         raise NotImplementedError
 
     def _is_valid_move(self, card, discard_pile):
@@ -87,9 +94,26 @@ class HumanPlayer(Player):
         
         print(f"Select from {source_name}: {visible}")
         return int(input("Enter card index (0-based): "))
-
+    
+    def get_name(self):
+        if not self.name:
+            self.name = input("Enter your name: ")
+        return self.name
 
 class AIPlayer(Player):
+    def __init__(self):
+        super().__init__()
+        self._names = [
+            "Alice", "Bob", "Charlie", "Diana", "Eve",
+            "Frank", "Grace", "Hank", "Ivy", "Jack"
+        ]
+
+    def get_name(self) -> str:
+        """Generate a random name for the AI player."""
+        if not self.name:  # Only generate once
+            self.name = random.choice(self._names)
+        return self.name
+
     def _select_card(self) -> int:
         """Improved AI with basic validation"""
         if not self.current_source:

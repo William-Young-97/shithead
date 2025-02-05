@@ -3,8 +3,8 @@ from game.card import Card
 from unittest.mock import patch
 import pytest
 
-
-def test_init():
+@patch("builtins.input", return_value="Alice") 
+def test_init(mock_input):
     player = Player()
     assert isinstance(player, Player)
     assert player.get_face_down_cards() == []
@@ -143,3 +143,18 @@ def test_face_down_revelation(capsys):
     # Check both messages in output
     assert "Select from face-down cards: ['???']" in captured.out
     assert "Revealed face-down card: J♠" in captured.out
+
+def test_human_player_get_name():
+    player = HumanPlayer()
+    
+    with patch("builtins.input", return_value="Alice"):
+        assert player.get_name() == "Alice"
+        assert player.name == "Alice"  # Verify name is stored
+
+def test_ai_player_get_name():
+    player = AIPlayer()
+    
+    # Mock random.choice to return a fixed name
+    with patch("random.choice", return_value="Bob"):
+        assert player.get_name() == "Bob"
+        assert player.name == "Bob"  # Verify name is stored
