@@ -43,12 +43,16 @@ class Game:
     def _play_turn(self):
         player = self.players[self.current_player_index]
         print(f"\n--- {player.name}'s turn ---")
-        print(f"deck length = {len(self.deck.cards)}")
+        print(f"deck remaining: {len(self.deck.cards)}")
+        player.get_visible_state()
+        print(f"----------------------------")
         if self.discard_pile:
             print(f"Discard pile top card: {self.discard_pile[-1]}")
         else:
             print("Discard pile is empty.")
-    
+
+        print(f"----------------------------")
+
         try:
             # Attempt to play a card
             player.play_card(self.discard_pile, self.deck)

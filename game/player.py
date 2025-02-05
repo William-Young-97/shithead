@@ -17,6 +17,13 @@ class Player:
         if self.face_down_cards:
             return self.face_down_cards
         return None
+    
+    def get_visible_state(self):
+        return print(f'''
+Hand: {[str(c) for c in self.hand]}\n
+Face Up: {[str(c) for c in self.face_up_cards]}\n
+Face Down: {["???" for _ in self.face_down_cards]}\n
+''')
 
     def play_card(self, discard_pile, deck):
         current_source = self.current_source 
@@ -79,13 +86,6 @@ class Player:
 
 
 class HumanPlayer(Player):
-    def get_visible_state(self) -> dict:
-        return {
-            "hand": [str(c) for c in self.hand],
-            "face_up": [str(c) for c in self.face_up_cards],
-            "face_down": ["???" for _ in self.face_down_cards]
-        }
-
     def _select_card(self) -> int:
         """Get card selection from user input"""
         if self.current_source is self.hand:
@@ -137,3 +137,10 @@ class AIPlayer(Player):
             if self._is_valid_move(card, []):  # Pass empty discard pile for now
                 return idx
         raise ValueError("No valid moves available")
+    
+    def get_visible_state(self):
+        return print(f'''
+Hand: {["???" for _ in self.hand]}\n
+Face Up: {[str(c) for c in self.face_up_cards]}\n
+Face Down: {["???" for _ in self.face_down_cards]}\n
+''')
