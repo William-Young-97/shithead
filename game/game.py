@@ -43,7 +43,7 @@ class Game:
     def _play_turn(self):
         player = self.players[self.current_player_index]
         print(f"\n--- {player.name}'s turn ---")
-
+        print(f"deck length = {len(self.deck.cards)}")
         if self.discard_pile:
             print(f"Discard pile top card: {self.discard_pile[-1]}")
         else:
