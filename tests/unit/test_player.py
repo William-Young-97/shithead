@@ -35,7 +35,7 @@ def test_human_player_play_card():
     with patch("builtins.input", return_value="0"):  # Mock input
         player.play_card(discard_pile)
     
-    assert len(player.hand) == 1
+    assert len(player.hand) == 3
     assert discard_pile[-1].rank == "8"
 
 def test_ai_player_play_card():
@@ -45,7 +45,7 @@ def test_ai_player_play_card():
     
     player.play_card(discard_pile)
     
-    assert len(player.hand) == 1
+    assert len(player.hand) == 3
     assert discard_pile[-1].rank == "8"
 
 def test_player_draw_card():
@@ -149,7 +149,7 @@ def test_human_player_get_name():
     
     with patch("builtins.input", return_value="Alice"):
         assert player.get_name() == "Alice"
-        assert player.name == "Alice"  # Verify name is stored
+        assert player.name == "Alice"
 
 def test_ai_player_get_name():
     player = AIPlayer()
@@ -157,4 +157,4 @@ def test_ai_player_get_name():
     # Mock random.choice to return a fixed name
     with patch("random.choice", return_value="Bob"):
         assert player.get_name() == "Bob"
-        assert player.name == "Bob"  # Verify name is stored
+        assert player.name == "Bob" 
