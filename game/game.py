@@ -1,8 +1,9 @@
 from game.player import Player, HumanPlayer, AIPlayer
+from game.deck import Deck
 
 class Game:
-    def __init__(self, deck, num_players=2) -> None:
-        self.deck = deck
+    def __init__(self, num_players=2) -> None:
+        self.deck = Deck()
         self.user = HumanPlayer()
         self.players = [self.user]
         for _ in range(num_players - 1):

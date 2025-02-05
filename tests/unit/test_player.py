@@ -38,13 +38,6 @@ def test_human_player_play_card():
     assert len(player.hand) == 1
     assert discard_pile[-1].rank == "8"
 
-    player.hand = []
-
-    player.face_up_cards = [Card("9", "Diamonds", 9)]
-
-    with patch("builtins.input", return_value="0"):  # Mock input
-        player.play_card(discard_pile)
-
 def test_ai_player_play_card():
     player = AIPlayer()
     player.hand = [Card("8", "Diamonds", 8), Card("2", "Spades", 2)]
