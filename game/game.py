@@ -1,20 +1,22 @@
-from game.player import Player, HumanPlayer, AIPlayer
+from typing import List
 from game.deck import Deck
+from game.player import Player, HumanPlayer, AIPlayer
+from game.card import Card
 
 class Game:
-    def __init__(self, num_players=2) -> None:
+    def __init__(self, num_players: int = 2):
         self.deck = Deck()
-        self.user = HumanPlayer()
-        self.players = [self.user]
+        self.discard_pile: List[Card] = []
+        self.players: List[Player] = []
+        self.current_player_index = 0
+        self._initialize_players(num_players)
+    
+    def _initialize_players(self, num_players: int):
+        self.players.append(HumanPlayer())
         for _ in range(num_players - 1):
             self.players.append(AIPlayer())
-        self.current_player = self.get_current_player()
-        self.discard_pile = []
     
     def deal_cards(self):
-        # Populate all players facedown, facecards, and then hand
-        self.deck.shuffle()
-        
         for player in self.players:
             for _ in range(3):
                 player.face_down_cards.append(self.deck.cards.pop())
@@ -29,9 +31,6 @@ class Game:
                 return True
         return False
     
-    # hard coded for until turns implemented
-    def get_current_player(self):
-        return self.players[0]
 
     # helpers
     def get_players(self):
