@@ -44,9 +44,14 @@ class Game:
         player = self.players[self.current_player_index]
         print(f"\n--- {player.name}'s turn ---")
 
+        if self.discard_pile:
+            print(f"Discard pile top card: {self.discard_pile[-1]}")
+        else:
+            print("Discard pile is empty.")
+    
         try:
             # Attempt to play a card
-            player.play_card(self.discard_pile, self.deck)
+            player.play_card(self.discard_pile, self.deck.cards)
             print(f"Played card: {self.discard_pile[-1]}")
         except ValueError as e:
             # Handle invalid moves or no cards
