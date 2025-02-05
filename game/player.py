@@ -99,7 +99,14 @@ class HumanPlayer(Player):
             visible = ["???" for _ in self.current_source]
         
         print(f"Select from {source_name}: {visible}")
-        return int(input("Enter card index (0-based): "))
+        try:
+            choice = int(input("Enter card index (0-based): "))
+            if 0 <= choice < len(self.current_source):
+                return choice
+            else:
+                print(f"Invalid index. Please enter a number between 0 and {len(self.current_source) - 1}.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
     
     def get_name(self):
         if not self.name:
