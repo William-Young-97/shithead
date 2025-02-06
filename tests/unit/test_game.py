@@ -3,12 +3,10 @@ from game.deck import Deck
 from game.player import HumanPlayer, AIPlayer
 from unittest.mock import patch
 
-# Here is a good spot for an integration test to make sure that the deck is shuffled
 
-# set players is going to exist in a class outside of game. Some ui ish layer.
-@patch("builtins.input", return_value="Alice") 
-def test_init(mock_input):
-    game = Game()
+
+def test_init():
+    game = Game(input_fn=fake_input, output_fn=fake_output)
 
     assert isinstance(game, Game)
     assert isinstance(game.deck, Deck)
@@ -16,21 +14,27 @@ def test_init(mock_input):
     assert isinstance(game.get_players()[0], HumanPlayer)
     assert isinstance(game.get_players()[1], AIPlayer)
 
-@patch("builtins.input", return_value="Alice") 
-def test_deal_cards(mock_input):
-    game = Game(num_players=2)
+def test_deal_cards():
+    game = Game(input_fn=fake_input, output_fn=fake_output)
     game._deal_cards()
     for player in game.players:
         assert len(player.hand) == 3
         assert len(player.face_up_cards) == 3
         assert len(player.face_down_cards) == 3
 
-@patch("builtins.input", return_value="Alice")
-def test_win_condition(mock_input):
-    game = Game(num_players=2)
+def test_win_condition():
+    game = Game(input_fn=fake_input, output_fn=fake_output)
     game.players[0].hand = []
     game.players[0].face_up_cards = []
     game.players[0].face_down_cards = []
     
     winner = game._check_win_condition()
     assert winner is game.players[0]
+
+# fakes
+    
+def fake_input(prompt):
+    return "Alice"
+
+def fake_output(message):
+    pass

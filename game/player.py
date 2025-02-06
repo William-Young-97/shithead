@@ -1,12 +1,13 @@
 import random
 
 class Player:
-    def __init__(self) -> None:
+    def __init__(self, output_fn=print) -> None:
         self.face_down_cards = []
         self.face_up_cards = []
         self.hand = []
         self.name = None
-    
+        self.output_fn = output_fn  # Injected output function
+
     @property
     def current_source(self):
         """Dynamically determines the active card source based on game rules"""
@@ -17,13 +18,13 @@ class Player:
         if self.face_down_cards:
             return self.face_down_cards
         return None
-    
+
     def get_visible_state(self):
         state = (
-        f"Hand: {[str(c) for c in self.hand]}\n\n"
-        f"Face Up: {[str(c) for c in self.face_up_cards]}\n\n"
-        f"Face Down: {['???' for _ in self.face_down_cards]}"
-    )
+            f"Hand: {[str(c) for c in self.hand]}\n\n"
+            f"Face Up: {[str(c) for c in self.face_up_cards]}\n\n"
+            f"Face Down: {['???' for _ in self.face_down_cards]}"
+        )
         return state
 
     def play_card(self, discard_pile, deck):
@@ -34,11 +35,11 @@ class Player:
         selected_index = self._select_card()
         candidate = current_source[selected_index]  # peek without removal
 
-        # If playing from face-down, reveal the card
+        # If playing from face-down, reveal the card using the injected output function.
         if current_source is self.face_down_cards:
-            print(f"Revealed face-down card: {candidate}")
+            self.output_fn(f"Revealed face-down card: {candidate}")
 
-        # Validate move before removing the card
+        # Validate move before removing the card.
         if discard_pile and candidate.value < discard_pile[-1].value:
             raise ValueError("Invalid move: card value too low")
 
@@ -48,18 +49,17 @@ class Player:
         self._refill_hand(deck)
         return played_card
 
-        
     def _refill_hand(self, deck):
         if self.hand and len(self.hand) < 3 and deck.cards:
             while len(self.hand) < 3 and deck.cards:
                 self.hand.append(deck.cards.pop())
 
     def get_name(self):
-        # impl in subclass
+        # Must be implemented in subclasses.
         raise NotImplementedError
 
     def _select_card(self) -> int:
-        # impl in subclass
+        # Must be implemented in subclasses.
         raise NotImplementedError
 
     def _is_valid_move(self, card, discard_pile):
@@ -90,6 +90,14 @@ class Player:
 
 
 class HumanPlayer(Player):
+    def __init__(self, input_fn=input, output_fn=print):
+        """
+        :param input_fn: Function to handle input (default is the built-in input)
+        :param output_fn: Function to handle output (default is the built-in print)
+        """
+        super().__init__(output_fn=output_fn)
+        self.input_fn = input_fn
+
     def _select_card(self) -> int:
         while True:
             if self.current_source is self.hand:
@@ -102,26 +110,28 @@ class HumanPlayer(Player):
                 source_name = "face-down cards"
                 visible = ["???" for _ in self.current_source]
 
-            print(f"Select from {source_name}: {visible}")
-            user_input = input("Enter card index (0-based): ")
+            self.output_fn(f"Select from {source_name}: {visible}")
+            user_input = self.input_fn("Enter card index (0-based): ")
             try:
                 choice = int(user_input)
                 if 0 <= choice < len(self.current_source):
                     return choice
                 else:
-                    print(f"Invalid index. Please enter a number between 0 and {len(self.current_source) - 1}.")
+                    self.output_fn(
+                        f"Invalid index. Please enter a number between 0 and {len(self.current_source) - 1}."
+                    )
             except ValueError:
-                print("Invalid input. Please enter a number.")
+                self.output_fn("Invalid input. Please enter a number.")
 
-    
     def get_name(self):
         if not self.name:
-            self.name = input("Enter your name: ")
+            self.name = self.input_fn("Enter your name: ")
         return self.name
 
+
 class AIPlayer(Player):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, output_fn=print):
+        super().__init__(output_fn=output_fn)
         self._names = [
             "Alice", "Bob", "Charlie", "Diana", "Eve",
             "Frank", "Grace", "Hank", "Ivy", "Jack"
@@ -129,7 +139,7 @@ class AIPlayer(Player):
 
     def get_name(self) -> str:
         """Generate a random name for the AI player."""
-        if not self.name:  # Only generate once
+        if not self.name:  # Only generate once.
             self.name = random.choice(self._names)
         return self.name
 
@@ -138,16 +148,16 @@ class AIPlayer(Player):
         if not self.current_source:
             raise ValueError("No cards available to play")
             
-        # Find first valid card
+        # Find the first valid card.
         for idx, card in enumerate(self.current_source):
-            if self._is_valid_move(card, []):  # Pass empty discard pile for now
+            if self._is_valid_move(card, []):  # Pass empty discard pile for now.
                 return idx
         raise ValueError("No valid moves available")
     
     def get_visible_state(self):
         state = (
-        f"Hand: {['???' for _ in self.hand]}\n\n"
-        f"Face Up: {[str(c) for c in self.face_up_cards]}\n\n"
-        f"Face Down: {['???' for _ in self.face_down_cards]}"
-    )
+            f"Hand: {['???' for _ in self.hand]}\n\n"
+            f"Face Up: {[str(c) for c in self.face_up_cards]}\n\n"
+            f"Face Down: {['???' for _ in self.face_down_cards]}"
+        )
         return state
