@@ -6,4 +6,4 @@ class Card:
     
     def __str__(self):
         suit_symbols = {"Spades": "♠", "Hearts": "♥", "Diamonds": "♦", "Clubs": "♣"}
-        return f"{self.rank}{suit_symbols[self.suit]}"
+        return f"{self.rank}{suit_symbols[self.suit]}" 
