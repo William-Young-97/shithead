@@ -9,3 +9,5 @@ def test_init_normal_card():
 def test_init_special_card():
     card = Card("Ten", "Spades", 10, True)
     assert card.special == True
+    assert card.effect != None
+
