@@ -31,19 +31,22 @@ Face Down: {["???" for _ in self.face_down_cards]}\n
             raise ValueError("No cards available to play")
         
         selected_index = self._select_card()
-        played_card = current_source.pop(selected_index)
-        
-        # Check reveal using stored source reference
-        if current_source is self.face_down_cards:
-            print(f"Revealed face-down card: {played_card}")
-        
-        if discard_pile and played_card.value < discard_pile[-1].value:
-            raise(ValueError)
-        else:
-            discard_pile.append(played_card)
+        candidate = current_source[selected_index]  # peek without removal
 
-            self._refill_hand(deck)
-            return played_card
+        # If playing from face-down, reveal the card
+        if current_source is self.face_down_cards:
+            print(f"Revealed face-down card: {candidate}")
+
+        # Validate move before removing the card
+        if discard_pile and candidate.value < discard_pile[-1].value:
+            raise ValueError("Invalid move: card value too low")
+
+        # Now the move is valid; remove and process the card.
+        played_card = current_source.pop(selected_index)
+        discard_pile.append(played_card)
+        self._refill_hand(deck)
+        return played_card
+
         
     def _refill_hand(self, deck):
         if self.hand and len(self.hand) < 3 and deck.cards:
