@@ -25,11 +25,12 @@ def test_deal_cards(mock_input):
         assert len(player.face_up_cards) == 3
         assert len(player.face_down_cards) == 3
 
-@patch("builtins.input", return_value="Alice") 
+@patch("builtins.input", return_value="Alice")
 def test_win_condition(mock_input):
     game = Game(num_players=2)
     game.players[0].hand = []
     game.players[0].face_up_cards = []
     game.players[0].face_down_cards = []
     
-    assert game._check_win_condition() is True
+    winner = game._check_win_condition()
+    assert winner is game.players[0]

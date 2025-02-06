@@ -25,11 +25,11 @@ class Game:
         self._start_game_loop()
     
     def _start_game_loop(self):
-        while not self._check_win_condition():
+        winner = None
+        while not (winner := self._check_win_condition()):
             self._play_turn()
             self._next_player()
-
-        print(f"Game over! {self.players[self.current_player_index]} wins!")
+        print(f"Game over! {winner.get_name()} wins!")
 
     def _deal_cards(self):
         for player in self.players:
@@ -43,8 +43,8 @@ class Game:
     def _play_turn(self):
         player = self.players[self.current_player_index]
         print(f"\n--- {player.name}'s turn ---")
-        print(f"deck remaining: {len(self.deck.cards)}")
-        player.get_visible_state()
+        print(f"deck remaining: {len(self.deck.cards)}\n")
+        print(player.get_visible_state())
         print(f"----------------------------")
         if self.discard_pile:
             print(f"Discard pile top card: {self.discard_pile[-1]}")
@@ -73,11 +73,12 @@ class Game:
     def _next_player(self):
         self.current_player_index = (self.current_player_index + 1) % len(self.players)
     
-    def _check_win_condition(self) -> bool:
+    def _check_win_condition(self):
         for player in self.players:
             if not player.hand and not player.face_up_cards and not player.face_down_cards:
-                return True
-        return False
+                return player
+        return None
+
 
     # helper
     def get_players(self):

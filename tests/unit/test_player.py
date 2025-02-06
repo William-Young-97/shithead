@@ -12,21 +12,26 @@ def test_init(mock_input):
     assert player.get_face_up_cards() == []
     assert player.get_hand() == []
 
-
 def test_visible_state_representation():
     # Setup player with cards
     player = HumanPlayer()
-    player.hand = [Card("A", "Spades", 14), Card("2", "Hearts", 2),  Card("3", "Hearts", 3)]
+    player.hand = [Card("A", "Spades", 14), Card("2", "Hearts", 2), Card("3", "Hearts", 3)]
     player.face_up_cards = [Card("10", "Diamonds", 10), Card("10", "Clubs", 10), Card("10", "Spades", 10)]
     player.face_down_cards = [Card("5", "Clubs", 5), Card("5", "Diamonds", 5), Card("5", "Hearts", 5)]
-
-    # Get formatted output
+    
+    # Get the multiline string output
     visible = player.get_visible_state()
     
-    # Verify visible cards
-    assert visible["hand"] == ["A♠", "2♥", "3♥"]
-    assert visible["face_up"] == ["10♦", "10♣", "10♠"]
-    assert visible["face_down"] == ["???", "???", "???"]
+    # Define the expected multiline string (note: leading/trailing whitespace is stripped)
+    expected = (
+        "Hand: ['A♠', '2♥', '3♥']\n\n"
+        "Face Up: ['10♦', '10♣', '10♠']\n\n"
+        "Face Down: ['???', '???', '???']"
+    )
+    
+    assert visible.strip() == expected.strip()
+
+
 
 def test_human_player_play_card():
     player = HumanPlayer()

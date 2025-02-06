@@ -19,11 +19,12 @@ class Player:
         return None
     
     def get_visible_state(self):
-        return print(f'''
-Hand: {[str(c) for c in self.hand]}\n
-Face Up: {[str(c) for c in self.face_up_cards]}\n
-Face Down: {["???" for _ in self.face_down_cards]}\n
-''')
+        state = (
+        f"Hand: {[str(c) for c in self.hand]}\n\n"
+        f"Face Up: {[str(c) for c in self.face_up_cards]}\n\n"
+        f"Face Down: {['???' for _ in self.face_down_cards]}"
+    )
+        return state
 
     def play_card(self, discard_pile, deck):
         current_source = self.current_source 
@@ -144,8 +145,9 @@ class AIPlayer(Player):
         raise ValueError("No valid moves available")
     
     def get_visible_state(self):
-        return print(f'''
-Hand: {["???" for _ in self.hand]}\n
-Face Up: {[str(c) for c in self.face_up_cards]}\n
-Face Down: {["???" for _ in self.face_down_cards]}\n
-''')
+        state = (
+        f"Hand: {['???' for _ in self.hand]}\n\n"
+        f"Face Up: {[str(c) for c in self.face_up_cards]}\n\n"
+        f"Face Down: {['???' for _ in self.face_down_cards]}"
+    )
+        return state
