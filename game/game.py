@@ -32,7 +32,7 @@ class Game:
         while not (winner := self._check_win_condition()):
             self._play_turn()
             self._next_player()
-        print(f"Game over! {winner.get_name()} wins!")
+        self.output_fn(f"Game over! {winner.get_name()} wins!")
 
     def _deal_cards(self):
         for player in self.players:
@@ -45,24 +45,25 @@ class Game:
 
     def _play_turn(self):
         player = self.players[self.current_player_index]
-        print(f"\n--- {player.name}'s turn ---")
-        print(f"deck remaining: {len(self.deck.cards)}\n")
-        print(player.get_visible_state())
-        print(f"----------------------------")
+        self.output_fn(f"\n--- {player.name}'s turn ---")
+        self.output_fn(f"deck remaining: {len(self.deck.cards)}\n")
+        self.output_fn(player.get_visible_state())
+        self.output_fn(f"----------------------------")
         if self.discard_pile:
-            print(f"Discard pile top card: {self.discard_pile[-1]}")
+            self.output_fn(f"Discard pile top card: {self.discard_pile[-1]}")
         else:
-            print("Discard pile is empty.")
+            self.output_fn("Discard pile is empty.")
 
-        print(f"----------------------------")
+        self.output_fn(f"----------------------------")
 
         try:
-            # Attempt to play a card
             player.play_card(self)
-            print(f"Played card: {self.discard_pile[-1]}")
+            if self.discard_pile:
+                self.output_fn(f"Played card: {self.discard_pile[-1]}")
+            else:
+                self.output_fn("No card was played.")
         except ValueError as e:
-            # Handle invalid moves or no cards
-            print(f"Invalid move: {e}")
+            self.output_fn(f"Invalid move: {e}")
             self._handle_no_valid_moves(player)
 
     def _handle_no_valid_moves(self, player: Player):
