@@ -105,6 +105,7 @@ class Player:
         """Pick up the entire discard pile"""
         self.hand.extend(game.discard_pile)
         game._clear_discard_pile()
+        self.output_fn(f"{self.name} picked up the discard pile!")
 
     # Accessors for testability
     def get_face_down_cards(self):
