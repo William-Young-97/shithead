@@ -42,8 +42,11 @@ class Player:
             self.output_fn(f"Revealed face-down card: {candidate}")
 
         # Validate move before removing the card.
+
         if game.discard_pile and candidate.value < game.discard_pile[-1].value:
-            raise ValueError("Invalid move: card value too low")
+            error_msg= (f"Invalid move: Please play a special card, a number equal or higher than the {game.discard_pile[-1].rank} "
+"or pickup the pile by typing 'p'.")
+            raise ValueError(error_msg)
 
         # Now the move is valid; remove and process the card.
         played_card = current_source.pop(selected_index)

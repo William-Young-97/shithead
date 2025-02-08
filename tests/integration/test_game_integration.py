@@ -16,36 +16,20 @@ def fake_output(message):
 # Initialize a list to hold captured messages.
 fake_output.captured = []
 
-def test_invalid_play_returns_to_loop_and_picks_up_discard():
-    # Create a game with fake input/output.
+def test_invalid_play_prompts_for_valid_move_or_pickup():
     game = Game(input_fn=fake_input_sequence(["Alice", "0"]), output_fn=fake_output)
-    
-    # Set up the game's discard pile with a card of value 8.
-    game.discard_pile = [Card("8", "Spades", 8)]
-    
-    # Get the human player.
     player = game.players[0]
-    
-    # Set up the player's hand with a card of value 7 (which is too low).
-    player.hand = [Card("7", "Hearts", 7)]
-    
-    # Expect the play to raise a ValueError.
-    with pytest.raises(ValueError) as excinfo:
-        player.play_card(game)
-    
-    # Verify the error message is as expected.
-    assert "Invalid move: card value too low" in str(excinfo.value)
-    
-    # Now simulate the game handling the invalid move.
-    # (In your game loop, this would be done in the exception handler.)
-    game._handle_no_valid_moves(player)
-    
-    # After handling, the discard pile should be picked up by the player and be empty.
-    assert len(game.discard_pile) == 0
-    # In this example, the player's hand should now contain the original card plus the discarded card.
-    # (Initially hand had 1 card and discard pile had 1 card, so hand should now have 2.)
-    assert len(player.hand) == 2
-    
-    # Also, verify that an appropriate error message was printed to output.
-    # For example, the output might contain "Invalid move:" or similar.
-    assert any("Picking up the discard pile." in msg for msg in fake_output.captured)
+    player.hand = [Card("7", "Hearts", 7), Card("7", "Spades", 7), Card("7", "Clubs", 7)]
+    game.discard_pile = [Card("8", "Spades", 8)]
+
+    try:
+        game._play_turn()
+    except ValueError as e:
+        assert "Invalid move" in str(e)
+        assert "higher than the" in str(e)
+        assert "or pickup the pile" in str(e)
+
+    assert len(player.hand) == 3
+    assert len(game.discard_pile) == 1
+    assert game.discard_pile[0].rank == "8"
+    assert game.current_player_index == 0 
