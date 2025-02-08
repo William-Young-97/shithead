@@ -65,6 +65,7 @@ class Player:
         effect = get_card_effect(played_card.rank)
         if effect:
             effect.apply(game)
+            self.output_fn(str(effect))
 
         self._refill_hand(game.deck)
         return played_card
