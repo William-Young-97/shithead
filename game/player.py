@@ -69,7 +69,10 @@ class Player:
 
         if effect:
             effect.apply(game)
-            self.output_fn(str(effect))
+            if played_card.rank == "3":
+                self.output_fn(effect.as_string(game))
+            else:
+                self.output_fn(str(effect))
 
         self._refill_hand(game.deck)
         return played_card
