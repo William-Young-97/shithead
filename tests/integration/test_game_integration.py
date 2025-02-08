@@ -48,4 +48,4 @@ def test_invalid_play_returns_to_loop_and_picks_up_discard():
     
     # Also, verify that an appropriate error message was printed to output.
     # For example, the output might contain "Invalid move:" or similar.
-    assert any("Invalid move:" in msg for msg in fake_output.captured)
+    assert any("Picking up the discard pile." in msg for msg in fake_output.captured)

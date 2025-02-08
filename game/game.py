@@ -9,6 +9,8 @@ class Game:
         self.discard_pile: List[Card] = []
         self.players: List[Player] = []
         self.current_player_index = 0
+        self.input_fn = input_fn
+        self.output_fn = output_fn
         self._initialize_players(num_players, input_fn, output_fn)
     
     def _initialize_players(self, num_players: int, input_fn, output_fn):
@@ -65,11 +67,12 @@ class Game:
 
     def _handle_no_valid_moves(self, player: Player):
         if not self.discard_pile:
-            print("Cannot pick up an empty discard pile. Drawing a card instead.")
+            self.output_fn("Cannot pick up an empty discard pile. Drawing a card instead.")
             player.draw(self.deck.cards)
         else:
-            print("Picking up the discard pile.")
+            self.output_fn("Picking up the discard pile.")
             player.pickup_discard_pile(self.discard_pile)
+
 
     def _next_player(self):
         self.current_player_index = (self.current_player_index + 1) % len(self.players)
