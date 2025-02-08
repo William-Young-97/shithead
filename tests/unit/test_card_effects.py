@@ -54,3 +54,15 @@ def test_two_resets_and_skips():
     
     assert game.get_actual_top_card().rank == "4"
     assert len(player.hand) == 0
+
+def test_two_resets_and_skips():
+    game = Game(input_fn=fake_input_sequence(["Bob", "0", "0", "0", "0", "0"]))
+    game.discard_pile = [Card("Ace", "Clubs", 14)]
+    player = game.players[0]
+    player.hand = [Card("2", "Clubs", 2), Card("2", "Clubs", 2), Card("2", "Clubs", 2), Card("2", "Clubs", 2)]
+    player.face_up_cards = [Card("Ace", "Clubs", 14)]
+    player.select_action(game)
+
+    assert len(player.hand) == 0
+    assert len(player.face_up_cards) == 0
+    assert game.get_actual_top_card().rank == "Ace"
