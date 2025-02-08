@@ -56,7 +56,7 @@ class Game:
 
         try:
             # Attempt to play a card
-            player.play_card(self.discard_pile, self.deck)
+            player.play_card(self)
             print(f"Played card: {self.discard_pile[-1]}")
         except ValueError as e:
             # Handle invalid moves or no cards
