@@ -15,5 +15,9 @@ def test_seven_reverses_order_of_play():
     game = Game(input_fn=fake_input_sequence(["Bob", "0"]))
     game.discard_pile = [Card("5", "Clubs", 5)]
     player = game.players[0]
-    player.hand = [Card("10", "Clubs", 10)]
+    player.hand = [Card("7", "Clubs", 7)]
     player.select_action(game)
+    ai = game.players[1]
+    ai.hand = [Card("8", "Clubs", 8)]
+    ai.select_action(game)
+    assert len(ai.hand) == 3

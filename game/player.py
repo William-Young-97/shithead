@@ -45,15 +45,16 @@ class Player:
         if not current_source:
             raise ValueError("No cards available to play")
         
-        candidate = current_source[choice]  # peek without removal
+        candidate = current_source[choice]
 
         # If playing from face-down, reveal the card using the injected output function.
         if current_source is self.face_down_cards:
             self.output_fn(f"Revealed face-down card: {candidate}")
 
-        # Validate move before removing the card.
-
-        if game.discard_pile and candidate.value < game.discard_pile[-1].value:
+        effect = get_card_effect(candidate.rank)
+        if effect:
+            pass
+        elif game.discard_pile and candidate.value < game.discard_pile[-1].value:
             error_msg= (f"Invalid move: Please play a special card, a number equal or higher than the {game.discard_pile[-1].rank} "
 "or pickup the pile by typing 'p'.")
             raise ValueError(error_msg)
@@ -62,7 +63,6 @@ class Player:
         played_card = current_source.pop(choice)
         game.discard_pile.append(played_card)
 
-        effect = get_card_effect(played_card.rank)
         if effect:
             effect.apply(game)
             self.output_fn(str(effect))
