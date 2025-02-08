@@ -33,22 +33,22 @@ def test_visible_state_representation():
     
     assert visible.strip() == expected.strip()
 
-def test_human_player_play_card():
+def test_human_player_select_action_play_card():
     game = Game(input_fn=fake_input_sequence(["Alice", "0"]))
     player = game.players[0]
     player.hand = [Card("8", "Diamonds", 8), Card("2", "Spades", 2)]
     game.discard_pile = [Card("7", "Hearts", 7)]
-    player.play_card(game) 
+    player.select_action(game) 
     assert len(player.hand) == 3
     assert game.discard_pile[-1].rank == "8"
 
-def test_ai_player_play_card():
+def test_ai_player_select_action_play_card():
     game = Game(input_fn=fake_input_sequence(["Alice", "0"]))
     player = game.players[1]
     player.hand = [Card("8", "Diamonds", 8), Card("2", "Spades", 2)]
     game.discard_pile = [Card("7", "Hearts", 7)]
 
-    player.play_card(game)
+    player.select_action(game)
     
     assert len(player.hand) == 3
     assert game.discard_pile[-1].rank == "8"
@@ -90,7 +90,7 @@ def test_source_transitions():
     player.hand = [Card("4", "Clubs", 4)]
     assert player.current_source == player.hand
 
-def test_play_from_different_sources():
+def test_select_action_from_different_sources():
     game = Game(input_fn=fake_input_sequence(["Alice", "0", "0", "0"]))
     game.deck = []
     game.discard_pile = []
@@ -98,19 +98,19 @@ def test_play_from_different_sources():
 
     # Test hand play
     player.hand = [Card("5", "Spades", 5)]
-    player.play_card(game)
+    player.select_action(game)
     assert len(player.hand) == 0
     assert game.discard_pile[-1].rank == "5"
     
     # Test face-up play
     player.face_up_cards = [Card("6", "Hearts", 6)]
-    player.play_card(game)
+    player.select_action(game)
     assert len(player.face_up_cards) == 0
     assert game.discard_pile[-1].rank == "6"
     
     # Test face-down play
     player.face_down_cards = [Card("7", "Diamonds", 7)]
-    player.play_card(game)
+    player.select_action(game)
     assert len(player.face_down_cards) == 0
     assert game.discard_pile[-1].rank == "7"
 
@@ -123,7 +123,7 @@ def test_invalid_play_handling():
     # Test invalid move with proper validation
     player.hand = [Card("7", "Hearts", 7)]
     with pytest.raises(ValueError):
-        player.play_card(game)
+        player.select_action(game)
 
 def test_current_source_edge_cases():
     player = Player(output_fn=fake_output)
@@ -149,7 +149,7 @@ def test_face_down_revelation():
     player.face_down_cards = [Card("J", "Spades", 11)]
 
     player._is_valid_move = lambda *args: True
-    player.play_card(game)
+    player.select_action(game)
 
     # Now assert on the messages collected.
     assert any("Select from face-down cards: ['???']" in msg for msg in captured_messages)

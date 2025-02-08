@@ -6,7 +6,7 @@ def test_ten_clears_discard_pile():
     game.discard_pile = [Card("5", "Clubs", 5)]
     player = game.players[0]
     player.hand = [Card("10", "Clubs", 10)]
-    player.play_card(game)
+    player.select_action(game)
     assert len(game.discard_pile) == 0
 
 def fake_input_sequence(responses):

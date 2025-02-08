@@ -29,13 +29,23 @@ class Player:
         )
         return state
 
-    def play_card(self, game):
+    def select_action(self, game):
+        current_source = self.current_source
+        if not current_source:
+            raise ValueError("No cards available to play")
+
+        choice = self._select_card_or_pickup(game.discard_pile)
+        if choice == 'p':
+            self.pickup_discard_pile(game.discard_pile)
+        else:
+            self._play_card(game, choice)
+
+    def _play_card(self, game, choice):
         current_source = self.current_source
         if not current_source:
             raise ValueError("No cards available to play")
         
-        selected_index = self._select_card()
-        candidate = current_source[selected_index]  # peek without removal
+        candidate = current_source[choice]  # peek without removal
 
         # If playing from face-down, reveal the card using the injected output function.
         if current_source is self.face_down_cards:
@@ -49,7 +59,7 @@ class Player:
             raise ValueError(error_msg)
 
         # Now the move is valid; remove and process the card.
-        played_card = current_source.pop(selected_index)
+        played_card = current_source.pop(choice)
         game.discard_pile.append(played_card)
 
         effect = get_card_effect(played_card.rank)
@@ -68,7 +78,7 @@ class Player:
         # Must be implemented in subclasses.
         raise NotImplementedError
 
-    def _select_card(self) -> int:
+    def _select_card_or_pickup(self, discard_pile) -> int:
         # Must be implemented in subclasses.
         raise NotImplementedError
 
@@ -108,7 +118,7 @@ class HumanPlayer(Player):
         super().__init__(output_fn=output_fn)
         self.input_fn = input_fn
 
-    def _select_card(self) -> int:
+    def _select_card_or_pickup(self, discard_pile) -> int:
         while True:
             if self.current_source is self.hand:
                 source_name = "hand"
@@ -121,7 +131,9 @@ class HumanPlayer(Player):
                 visible = ["???" for _ in self.current_source]
 
             self.output_fn(f"Select from {source_name}: {visible}")
-            user_input = self.input_fn("Enter card index (0-based): ")
+            user_input = self.input_fn("Enter card index (0-based) or type 'p' to pickup: ")
+            if user_input.lower() == 'p':
+                return 'p'
             try:
                 choice = int(user_input)
                 if 0 <= choice < len(self.current_source):
@@ -129,9 +141,10 @@ class HumanPlayer(Player):
                 else:
                     self.output_fn(
                         f"Invalid index. Please enter a number between 0 and {len(self.current_source) - 1}."
+                        "or type 'p' to pickup the discard pile."
                     )
             except ValueError:
-                self.output_fn("Invalid input. Please enter a number.")
+                self.output_fn("Invalid input. Please enter a number or p to pickup.")
 
     def get_name(self):
         if not self.name:
@@ -153,16 +166,15 @@ class AIPlayer(Player):
             self.name = random.choice(self._names)
         return self.name
 
-    def _select_card(self) -> int:
-        """Improved AI with basic validation"""
+    def _select_card_or_pickup(self, discard_pile) -> int:
         if not self.current_source:
             raise ValueError("No cards available to play")
-            
+
         # Find the first valid card.
         for idx, card in enumerate(self.current_source):
-            if self._is_valid_move(card, []):  # Pass empty discard pile for now.
+            if self._is_valid_move(card, discard_pile):
                 return idx
-        raise ValueError("No valid moves available")
+        return 'p'
     
     def get_visible_state(self):
         state = (

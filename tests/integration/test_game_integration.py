@@ -1,6 +1,4 @@
-import pytest
 from game.card import Card
-from game.player import HumanPlayer
 from game.game import Game
 
 # A helper that returns predetermined inputs.

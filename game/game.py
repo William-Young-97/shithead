@@ -31,7 +31,6 @@ class Game:
         winner = None
         while not (winner := self._check_win_condition()):
             self._play_turn()
-            self._next_player()
         self.output_fn(f"Game over! {winner.get_name()} wins!")
 
     def _deal_cards(self):
@@ -57,22 +56,14 @@ class Game:
         self.output_fn(f"----------------------------")
 
         try:
-            player.play_card(self)
+            player.select_action(self)
             if self.discard_pile:
                 self.output_fn(f"Played card: {self.discard_pile[-1]}")
             else:
                 self.output_fn("No card was played.")
+            self._next_player()
         except ValueError as e:
             self.output_fn(f"Invalid move: {e}")
-            self._handle_no_valid_moves(player)
-
-    def _handle_no_valid_moves(self, player: Player):
-        if not self.discard_pile:
-            self.output_fn("Cannot pick up an empty discard pile. Drawing a card instead.")
-            player.draw(self.deck.cards)
-        else:
-            self.output_fn("Picking up the discard pile.")
-            player.pickup_discard_pile(self.discard_pile)
 
 
     def _next_player(self):
