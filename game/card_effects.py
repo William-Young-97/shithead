@@ -42,4 +42,3 @@ class TwoEffect(CardEffects):
         game.is_reversed = False
     def __str__(self):
         return "The two reset the pile! Time to play another card in ascending order!"
-    

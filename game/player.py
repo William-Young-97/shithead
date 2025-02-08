@@ -54,6 +54,8 @@ class Player:
         if candidate.rank == "2":
             played_two = current_source.pop(choice)
             game.discard_pile.append(played_two)
+            if not self.hand and not self.face_up_cards and not self.face_down_cards:
+                return played_two
 
             new_choice = self._select_card_or_pickup(game)
             # Recursively call _play_card with the new choice.

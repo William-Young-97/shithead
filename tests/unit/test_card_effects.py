@@ -66,3 +66,14 @@ def test_two_resets_and_skips():
     assert len(player.hand) == 0
     assert len(player.face_up_cards) == 0
     assert game.get_actual_top_card().rank == "Ace"
+
+def test_win_on_two_last_card():
+    game = Game(input_fn=fake_input_sequence(["Alice", "0"]))
+    player = game.players[0]
+    player.hand = []
+    player.face_up_cards = []
+    player.face_down_cards = [Card("2", "Spades", 2)]
+    ai = game.players[1]
+    ai.hand = [Card("Ace", "Clubs", 14)]
+    game._start_game_loop()
+    assert player == game._check_win_condition()
