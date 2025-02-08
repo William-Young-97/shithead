@@ -51,5 +51,6 @@ def test_two_resets_and_skips():
     player = game.players[0]
     player.hand = [Card("2", "Clubs", 2), Card("4", "Clubs", 4)]
     player.select_action(game)
+    
     assert game.get_actual_top_card().rank == "4"
     assert len(player.hand) == 0

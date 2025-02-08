@@ -35,5 +35,11 @@ class ThreeEffect(CardEffects):
             return "The three has no card beneath to copy."
     
     def __str__(self):
-        
         return "ThreeEffect (dynamic representation requires game context)"
+
+class TwoEffect(CardEffects):
+    def apply(self, game):
+        game.is_reversed = False
+    def __str__(self):
+        return "The two reset the pile! Time to play another card in ascending order!"
+    

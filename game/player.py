@@ -50,6 +50,14 @@ class Player:
         # If playing from face-down, reveal the card using the injected output function.
         if current_source is self.face_down_cards:
             self.output_fn(f"Revealed face-down card: {candidate}")
+        
+        if candidate.rank == "2":
+            played_two = current_source.pop(choice)
+            game.discard_pile.append(played_two)
+
+            new_choice = self._select_card_or_pickup(game)
+            # Recursively call _play_card with the new choice.
+            return self._play_card(game, new_choice)
 
         effect = get_card_effect(candidate.rank)
         if effect:
@@ -63,13 +71,12 @@ class Player:
 "or pickup the pile by typing 'p'.")
             raise ValueError(error_msg)
 
-        # Now the move is valid; remove and process the card.
         played_card = current_source.pop(choice)
         game.discard_pile.append(played_card)
 
         if effect:
             effect.apply(game)
-            if played_card.rank == "3":
+            if candidate.rank == "3":
                 self.output_fn(effect.as_string(game))
             else:
                 self.output_fn(str(effect))
