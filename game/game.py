@@ -59,8 +59,6 @@ class Game:
             player.select_action(self)
             if self.discard_pile:
                 self.output_fn(f"Played card: {self.discard_pile[-1]}")
-            else:
-                self.output_fn("No card was played.")
             self._next_player()
         except ValueError as e:
             self.output_fn(f"Invalid move: {e}")
