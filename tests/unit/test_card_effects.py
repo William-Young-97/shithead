@@ -42,5 +42,14 @@ def test_three_is_invisible():
     player = game.players[0]
     player.hand = [Card("3", "Clubs", 3)]
     player.select_action(game)
-    assert game.discard_pile[-1].rank == "3"
+    assert game.get_actual_top_card().rank == "3"
     assert game.get_effective_top_card().rank == "5"
+
+def test_two_resets_and_skips():
+    game = Game(input_fn=fake_input_sequence(["Bob", "0", "0"]))
+    game.discard_pile = [Card("Ace", "Clubs", 14)]
+    player = game.players[0]
+    player.hand = [Card("2", "Clubs", 2), Card("4", "Clubs", 4)]
+    player.select_action(game)
+    assert game.get_actual_top_card().rank == "4"
+    assert len(player.hand) == 0
