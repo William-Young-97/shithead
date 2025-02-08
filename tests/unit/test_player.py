@@ -1,9 +1,9 @@
 from game.player import Player, HumanPlayer, AIPlayer
 from game.card import Card
-from game.deck import Deck
 from game.game import Game
 from unittest.mock import patch
 import pytest
+from tests.helpers import fake_input_sequence, fake_output
 
 # Finish reimplementing game across play_hand()
 
@@ -16,7 +16,7 @@ def test_init():
 
 def test_visible_state_representation():
     # Setup player with cards
-    player = HumanPlayer(input_fn=fake_input, output_fn=fake_output)
+    player = HumanPlayer(input_fn=fake_input_sequence(["Bob"]), output_fn=fake_output)
     player.hand = [Card("A", "Spades", 14), Card("2", "Hearts", 2), Card("3", "Hearts", 3)]
     player.face_up_cards = [Card("10", "Diamonds", 10), Card("10", "Clubs", 10), Card("10", "Spades", 10)]
     player.face_down_cards = [Card("5", "Clubs", 5), Card("5", "Diamonds", 5), Card("5", "Hearts", 5)]
@@ -157,10 +157,10 @@ def test_face_down_revelation():
 
 
 def test_human_player_get_name():
-    player = HumanPlayer(input_fn=fake_input, output_fn=fake_output)
+    player = HumanPlayer(input_fn=fake_input_sequence(["Bob"]), output_fn=fake_output)
 
-    assert player.get_name() == "Alice"
-    assert player.name == "Alice"
+    assert player.get_name() == "Bob"
+    assert player.name == "Bob"
 
 def test_ai_player_get_name():
     player = AIPlayer(output_fn=fake_output)
@@ -168,17 +168,3 @@ def test_ai_player_get_name():
     with patch("random.choice", return_value="Bob"):
         assert player.get_name() == "Bob"
         assert player.name == "Bob" 
-
-# fakes
-    
-def fake_input(prompt):
-    return "Alice"
-
-def fake_output(message):
-    pass
-
-def fake_input_sequence(responses):
-    responses_iter = iter(responses)
-    def inner(prompt):
-        return next(responses_iter)
-    return inner
