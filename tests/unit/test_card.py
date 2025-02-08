@@ -5,4 +5,3 @@ def test_init_normal_card():
     assert card.rank == "Ace"
     assert card.suit == "Spades"
     assert card.value == 14
-

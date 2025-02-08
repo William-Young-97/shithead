@@ -42,46 +42,25 @@ class Player:
 
     def _play_card(self, game, choice):
         current_source = self.current_source
-        if not current_source:
-            raise ValueError("No cards available to play")
-        
+        self._validate_choice(current_source, choice)
         candidate = current_source[choice]
 
-        # If playing from face-down, reveal the card using the injected output function.
+        # Reveal face-down card if applicable.
         if current_source is self.face_down_cards:
             self.output_fn(f"Revealed face-down card: {candidate}")
-        
+
+        # Special handling for 2's.
         if candidate.rank == "2":
-            played_two = current_source.pop(choice)
-            game.discard_pile.append(played_two)
-            if not self.hand and not self.face_up_cards and not self.face_down_cards:
-                return played_two
+            return self._handle_two(game, choice)
 
-            new_choice = self._select_card_or_pickup(game)
-            # Recursively call _play_card with the new choice.
-            return self._play_card(game, new_choice)
+        # Validate normal moves.
+        if not get_card_effect(candidate.rank):
+            self._validate_normal_move(game, candidate)
 
-        effect = get_card_effect(candidate.rank)
-        if effect:
-            pass
-        elif not game.is_reversed and game.discard_pile and candidate.value < game.get_effective_top_card().value:
-            error_msg= (f"Invalid move: Please play a special card, a number equal or higher than the {game.get_effective_top_card().rank} "
-"or pickup the pile by typing 'p'.")
-            raise ValueError(error_msg)
-        elif game.is_reversed and game.discard_pile and candidate.value > game.get_effective_top_card().value:
-            error_msg= (f"Invalid move: Please play a special card, a number equal or lower than the {game.get_effective_top_card().rank} "
-"or pickup the pile by typing 'p'.")
-            raise ValueError(error_msg)
-
+        # Process the card and apply any effect.
         played_card = current_source.pop(choice)
         game.discard_pile.append(played_card)
-
-        if effect:
-            effect.apply(game)
-            if candidate.rank == "3":
-                self.output_fn(effect.as_string(game))
-            else:
-                self.output_fn(str(effect))
+        _ = self._apply_effect_if_any(game, candidate)
 
         self._refill_hand(game.deck)
         return played_card
@@ -98,15 +77,6 @@ class Player:
     def _select_card_or_pickup(self, game) -> int:
         # Must be implemented in subclasses.
         raise NotImplementedError
-
-    def _is_valid_move(self, card, game):
-        """Basic validation (extend for special cards later)"""
-        if not game.discard_pile:
-            return True
-        if game.is_reversed:
-            return card.value <= game.get_effective_top_card().value
-        else:
-            return card.value >= game.get_effective_top_card().value
 
     def draw(self, deck):
         """Draw a card from the deck"""
@@ -128,6 +98,52 @@ class Player:
 
     def get_hand(self):
         return self.hand.copy()
+
+    def _validate_choice(self, current_source, choice):
+        if current_source is None or len(current_source) == 0:
+            raise ValueError("No cards available to play")
+        if choice < 0 or choice >= len(current_source):
+            raise ValueError("Invalid selection index.")
+
+    def _handle_two(self, game, choice):
+        """Handles the logic when a '2' is played."""
+        current_source = self.current_source
+        played_two = current_source.pop(choice)
+        game.discard_pile.append(played_two)
+        self.output_fn(f"Played card: {str(game.get_actual_top_card())}")
+        # If playing the two empties all sources, return it immediately.
+        if not self.hand and not self.face_up_cards and not self.face_down_cards:
+            return played_two
+        # Otherwise, prompt the user again and recursively play the next card.
+        new_choice = self._select_card_or_pickup(game)
+        return self._play_card(game, new_choice)
+
+    def _validate_normal_move(self, game, candidate):
+        """Checks for invalid moves based on the current game state."""
+        if not game.is_reversed and game.discard_pile and candidate.value < game.get_effective_top_card().value:
+            error_msg = (
+                f"Invalid move: Please play a special card, a number equal or higher than the "
+                f"{game.get_effective_top_card().rank} or pickup the pile by typing 'p'."
+            )
+            raise ValueError(error_msg)
+        if game.is_reversed and game.discard_pile and candidate.value > game.get_effective_top_card().value:
+            error_msg = (
+                f"Invalid move: Please play a special card, a number equal or lower than the "
+                f"{game.get_effective_top_card().rank} or pickup the pile by typing 'p'."
+            )
+            raise ValueError(error_msg)
+
+    def _apply_effect_if_any(self, game, candidate):
+        """Retrieves and applies any special effect for the candidate card."""
+        effect = get_card_effect(candidate.rank)
+        if effect:
+            effect.apply(game)
+            # For a '3', if there's a dynamic representation, use it.
+            if candidate.rank == "3" and hasattr(effect, "as_string"):
+                self.output_fn(effect.as_string(game))
+            else:
+                self.output_fn(str(effect))
+        return effect
 
 
 class HumanPlayer(Player):
@@ -187,15 +203,23 @@ class AIPlayer(Player):
             self.name = random.choice(self._names)
         return self.name
 
-    def _select_card_or_pickup(self, game) -> int:
+    def _select_card_or_pickup(self, game):
         if not self.current_source:
             raise ValueError("No cards available to play")
-
-        # Find the first valid card.
+        
+        # Iterate over available cards in the current source.
         for idx, card in enumerate(self.current_source):
-            if self._is_valid_move(card, game):
+            try:
+                # Attempt to validate the move for this card.
+                self._validate_normal_move(game, card)
+                # If no exception is raised, then this card is valid.
                 return idx
+            except ValueError:
+                # If the move is invalid, skip this card.
+                continue
+        # If no card passes validation, return 'p' to indicate a pickup.
         return 'p'
+
     
     def get_visible_state(self):
         state = (

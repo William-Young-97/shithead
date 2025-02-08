@@ -2,7 +2,6 @@ from game.card import Card
 from game.game import Game
 from tests.helpers import fake_input_sequence
 
-
 def test_ten_clears_discard_pile():
     game = Game(input_fn=fake_input_sequence(["Bob", "0"]))
     game.discard_pile = [Card("Jack", "Clubs", 11)]
