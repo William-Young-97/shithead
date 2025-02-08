@@ -36,3 +36,11 @@ def test_invalid_move_after_seven():
         assert "Invalid move" in str(e), "The error message should indicate an invalid move."
         assert "lower than the 7" in str(e), "The error message should mention the value constraint."
 
+def test_three_is_invisible():
+    game = Game(input_fn=fake_input_sequence(["Bob", "0"]))
+    game.discard_pile = [Card("5", "Clubs", 5)]
+    player = game.players[0]
+    player.hand = [Card("3", "Clubs", 3)]
+    player.select_action(game)
+    assert game.discard_pile[-1].rank == "3"
+    assert game.get_effective_top_card().rank == "5"

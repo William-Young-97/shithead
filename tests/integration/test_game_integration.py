@@ -1,18 +1,6 @@
 from game.card import Card
 from game.game import Game
-
-# A helper that returns predetermined inputs.
-def fake_input_sequence(responses):
-    responses_iter = iter(responses)
-    def inner(prompt):
-        return str(next(responses_iter))
-    return inner
-
-# A fake output function that collects messages.
-def fake_output(message):
-    fake_output.captured.append(message)
-# Initialize a list to hold captured messages.
-fake_output.captured = []
+from tests.helpers import fake_input_sequence, fake_output
 
 def test_invalid_play_prompts_for_valid_move_or_pickup():
     game = Game(input_fn=fake_input_sequence(["Alice", "0"]), output_fn=fake_output)
