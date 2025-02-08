@@ -12,6 +12,7 @@ class Game:
         self.input_fn = input_fn
         self.output_fn = output_fn
         self._initialize_players(num_players, input_fn, output_fn)
+        self.is_reversed = False
     
     def _initialize_players(self, num_players: int, input_fn, output_fn):
         # Create a HumanPlayer with the provided input/output functions.
@@ -72,7 +73,10 @@ class Game:
             if not player.hand and not player.face_up_cards and not player.face_down_cards:
                 return player
         return None
-
+    
+    def _clear_discard_pile(self):
+        self.discard_pile.clear()
+        self.is_reversed = False 
 
     # helper
     def get_players(self):

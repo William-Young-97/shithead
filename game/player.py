@@ -34,9 +34,9 @@ class Player:
         if not current_source:
             raise ValueError("No cards available to play")
 
-        choice = self._select_card_or_pickup(game.discard_pile)
+        choice = self._select_card_or_pickup(game)
         if choice == 'p':
-            self.pickup_discard_pile(game.discard_pile)
+            self.pickup_discard_pile(game)
         else:
             self._play_card(game, choice)
 
@@ -54,8 +54,12 @@ class Player:
         effect = get_card_effect(candidate.rank)
         if effect:
             pass
-        elif game.discard_pile and candidate.value < game.discard_pile[-1].value:
+        elif not game.is_reversed and game.discard_pile and candidate.value < game.discard_pile[-1].value:
             error_msg= (f"Invalid move: Please play a special card, a number equal or higher than the {game.discard_pile[-1].rank} "
+"or pickup the pile by typing 'p'.")
+            raise ValueError(error_msg)
+        elif game.is_reversed and game.discard_pile and candidate.value > game.discard_pile[-1].value:
+            error_msg= (f"Invalid move: Please play a special card, a number equal or lower than the {game.discard_pile[-1].rank} "
 "or pickup the pile by typing 'p'.")
             raise ValueError(error_msg)
 
@@ -79,25 +83,28 @@ class Player:
         # Must be implemented in subclasses.
         raise NotImplementedError
 
-    def _select_card_or_pickup(self, discard_pile) -> int:
+    def _select_card_or_pickup(self, game) -> int:
         # Must be implemented in subclasses.
         raise NotImplementedError
 
-    def _is_valid_move(self, card, discard_pile):
+    def _is_valid_move(self, card, game):
         """Basic validation (extend for special cards later)"""
-        if not discard_pile:
+        if not game.discard_pile:
             return True
-        return card.value >= discard_pile[-1].value
+        if game.is_reversed:
+            return card.value <= game.discard_pile[-1].value
+        else:
+            return card.value >= game.discard_pile[-1].value
 
     def draw(self, deck):
         """Draw a card from the deck"""
         if deck:
             self.hand.append(deck.pop())
 
-    def pickup_discard_pile(self, discard_pile):
+    def pickup_discard_pile(self, game):
         """Pick up the entire discard pile"""
-        self.hand.extend(discard_pile)
-        discard_pile.clear()
+        self.hand.extend(game.discard_pile)
+        game._clear_discard_pile()
 
     # Accessors for testability
     def get_face_down_cards(self):
@@ -119,7 +126,7 @@ class HumanPlayer(Player):
         super().__init__(output_fn=output_fn)
         self.input_fn = input_fn
 
-    def _select_card_or_pickup(self, discard_pile) -> int:
+    def _select_card_or_pickup(self, game) -> int:
         while True:
             if self.current_source is self.hand:
                 source_name = "hand"
@@ -167,13 +174,13 @@ class AIPlayer(Player):
             self.name = random.choice(self._names)
         return self.name
 
-    def _select_card_or_pickup(self, discard_pile) -> int:
+    def _select_card_or_pickup(self, game) -> int:
         if not self.current_source:
             raise ValueError("No cards available to play")
 
         # Find the first valid card.
         for idx, card in enumerate(self.current_source):
-            if self._is_valid_move(card, discard_pile):
+            if self._is_valid_move(card, game):
                 return idx
         return 'p'
     

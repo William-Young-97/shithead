@@ -64,10 +64,11 @@ def test_player_draw_card():
     assert player.hand[-1].rank == "7"
 
 def test_pickup_discard_pile():
-    player = Player(output_fn=fake_output)
+    game = Game(input_fn=fake_input_sequence(["Alice"]))
+    player = game.players[0]
     player.hand = [Card("8", "Diamonds", 8), Card("4", "Spades", 4)]
-    discard_pile = [Card("9", "Hearts", 9)]
-    player.pickup_discard_pile(discard_pile)
+    game.discard_pile = [Card("9", "Hearts", 9)]
+    player.pickup_discard_pile(game)
 
     assert len(player.hand) == 3
     assert player.hand[-1].rank == "9"
@@ -121,7 +122,7 @@ def test_invalid_play_handling():
     player = game.players[0]
 
     # Test invalid move with proper validation
-    player.hand = [Card("7", "Hearts", 7)]
+    player.hand = [Card("6", "Hearts", 6)]
     with pytest.raises(ValueError):
         player.select_action(game)
 
@@ -148,7 +149,7 @@ def test_face_down_revelation():
     player = game.players[0]
     player.face_down_cards = [Card("J", "Spades", 11)]
 
-    player._is_valid_move = lambda *args: True
+    player._move = lambda *args: True
     player.select_action(game)
 
     # Now assert on the messages collected.
