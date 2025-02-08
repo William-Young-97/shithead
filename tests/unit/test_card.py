@@ -6,7 +6,3 @@ def test_init_normal_card():
     assert card.suit == "Spades"
     assert card.value == 14
 
-def test_init_special_card():
-    card = Card("Ten", "Spades", 10, True)
-    assert card.special == True
-

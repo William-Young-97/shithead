@@ -1,4 +1,6 @@
 import random
+from game.card_effect_factory import get_card_effect
+from game.card import Card
 
 class Player:
     def __init__(self, output_fn=print) -> None:
@@ -27,8 +29,8 @@ class Player:
         )
         return state
 
-    def play_card(self, discard_pile, deck):
-        current_source = self.current_source 
+    def play_card(self, game):
+        current_source = self.current_source
         if not current_source:
             raise ValueError("No cards available to play")
         
@@ -40,13 +42,18 @@ class Player:
             self.output_fn(f"Revealed face-down card: {candidate}")
 
         # Validate move before removing the card.
-        if discard_pile and candidate.value < discard_pile[-1].value:
+        if game.discard_pile and candidate.value < game.discard_pile[-1].value:
             raise ValueError("Invalid move: card value too low")
 
         # Now the move is valid; remove and process the card.
         played_card = current_source.pop(selected_index)
-        discard_pile.append(played_card)
-        self._refill_hand(deck)
+        game.discard_pile.append(played_card)
+
+        effect = get_card_effect(played_card.rank)
+        if effect:
+            effect.apply(game)
+
+        self._refill_hand(game.deck)
         return played_card
 
     def _refill_hand(self, deck):
