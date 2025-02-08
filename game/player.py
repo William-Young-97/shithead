@@ -111,12 +111,18 @@ class Player:
         played_two = current_source.pop(choice)
         game.discard_pile.append(played_two)
         self.output_fn(f"Played card: {str(game.get_actual_top_card())}")
-        # If playing the two empties all sources, return it immediately.
+        
         if not self.hand and not self.face_up_cards and not self.face_down_cards:
             return played_two
-        # Otherwise, prompt the user again and recursively play the next card.
+
+        # Otherwise, prompt the user for the next move.
         new_choice = self._select_card_or_pickup(game)
-        return self._play_card(game, new_choice)
+        if new_choice == 'p':
+            self.pickup_discard_pile(game)
+            return None
+        else:
+            return self._play_card(game, int(new_choice))
+
 
     def _validate_normal_move(self, game, candidate):
         """Checks for invalid moves based on the current game state."""
