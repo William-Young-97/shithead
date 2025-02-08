@@ -40,7 +40,7 @@ def test_human_player_select_action_play_card():
     game.discard_pile = [Card("7", "Hearts", 7)]
     player.select_action(game) 
     assert len(player.hand) == 3
-    assert game.discard_pile[-1].rank == "8"
+    assert game.get_effective_top_card().rank == "8"
 
 def test_ai_player_select_action_play_card():
     game = Game(input_fn=fake_input_sequence(["Alice", "0"]))
@@ -51,7 +51,7 @@ def test_ai_player_select_action_play_card():
     player.select_action(game)
     
     assert len(player.hand) == 3
-    assert game.discard_pile[-1].rank == "8"
+    assert game.get_effective_top_card().rank == "8"
 
 def test_player_draw_card():
     player = Player(output_fn=fake_output)
@@ -101,19 +101,19 @@ def test_select_action_from_different_sources():
     player.hand = [Card("5", "Spades", 5)]
     player.select_action(game)
     assert len(player.hand) == 0
-    assert game.discard_pile[-1].rank == "5"
+    assert game.get_effective_top_card().rank == "5"
     
     # Test face-up play
     player.face_up_cards = [Card("6", "Hearts", 6)]
     player.select_action(game)
     assert len(player.face_up_cards) == 0
-    assert game.discard_pile[-1].rank == "6"
+    assert game.get_effective_top_card().rank == "6"
     
     # Test face-down play
     player.face_down_cards = [Card("7", "Diamonds", 7)]
     player.select_action(game)
     assert len(player.face_down_cards) == 0
-    assert game.discard_pile[-1].rank == "7"
+    assert game.get_effective_top_card().rank == "7"
 
 def test_invalid_play_handling():
     game = Game(input_fn=fake_input_sequence(["Alice", "0"]))

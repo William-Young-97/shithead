@@ -54,12 +54,12 @@ class Player:
         effect = get_card_effect(candidate.rank)
         if effect:
             pass
-        elif not game.is_reversed and game.discard_pile and candidate.value < game.discard_pile[-1].value:
-            error_msg= (f"Invalid move: Please play a special card, a number equal or higher than the {game.discard_pile[-1].rank} "
+        elif not game.is_reversed and game.discard_pile and candidate.value < game.get_effective_top_card().value:
+            error_msg= (f"Invalid move: Please play a special card, a number equal or higher than the {game.get_effective_top_card().rank} "
 "or pickup the pile by typing 'p'.")
             raise ValueError(error_msg)
-        elif game.is_reversed and game.discard_pile and candidate.value > game.discard_pile[-1].value:
-            error_msg= (f"Invalid move: Please play a special card, a number equal or lower than the {game.discard_pile[-1].rank} "
+        elif game.is_reversed and game.discard_pile and candidate.value > game.get_effective_top_card().value:
+            error_msg= (f"Invalid move: Please play a special card, a number equal or lower than the {game.get_effective_top_card().rank} "
 "or pickup the pile by typing 'p'.")
             raise ValueError(error_msg)
 
@@ -92,9 +92,9 @@ class Player:
         if not game.discard_pile:
             return True
         if game.is_reversed:
-            return card.value <= game.discard_pile[-1].value
+            return card.value <= game.get_effective_top_card().value
         else:
-            return card.value >= game.discard_pile[-1].value
+            return card.value >= game.get_effective_top_card().value
 
     def draw(self, deck):
         """Draw a card from the deck"""
