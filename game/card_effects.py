@@ -18,7 +18,7 @@ class TenEffect(CardEffects):
     
 class SevenEffect(CardEffects):
     def apply(self, game):
-        game.is_reversed = not game.is_reversed
+        game.is_reversed = True
 
     def __str__(self):
         return "The seven reversed the order of play!"
@@ -26,7 +26,7 @@ class SevenEffect(CardEffects):
 class ThreeEffect(CardEffects):
     def apply(self, game):
         pass
-    
+
     def as_string(self, game):
         effective_top = game.get_effective_top_card()
         if effective_top:

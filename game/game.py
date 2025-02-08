@@ -50,7 +50,7 @@ class Game:
         self.output_fn(player.get_visible_state())
         self.output_fn(f"----------------------------")
         if self.discard_pile:
-            self.output_fn(f"Discard pile top card: {self.get_effective_top_card()}")
+            self.output_fn(f"Discard pile top card: {str(self.get_effective_top_card())}")
         else:
             self.output_fn("Discard pile is empty.")
 
@@ -59,7 +59,7 @@ class Game:
         try:
             player.select_action(self)
             if self.discard_pile:
-                self.output_fn(f"Played card: {self.get_actual_top_card}")
+                self.output_fn(f"Played card: {str(self.get_actual_top_card())}")
             self._next_player()
         except ValueError as e:
             self.output_fn(f"Invalid move: {e}")
