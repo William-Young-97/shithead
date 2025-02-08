@@ -78,10 +78,11 @@ def test_win_on_two_last_card():
     assert player == game._check_win_condition()
 
 def test_two_resets_and_skips():
+    # cards should be drawn imidiately after being played
     game = Game(input_fn=fake_input_sequence(["Bob", "0", "0", "0", "0"]))
     game.discard_pile = []
-    game.deck = [Card("Ace", "Spades", 14)]
+    game.deck.cards = [Card("Ace", "Spades", 14)]
     player = game.players[0]
     player.hand = [Card("2", "Clubs", 2), Card("2", "Clubs", 2), Card("2", "Clubs", 2)]
     player.select_action(game)
-    assert game.get_actual_top_card().rank == 14
+    assert game.get_actual_top_card().rank == "Ace"

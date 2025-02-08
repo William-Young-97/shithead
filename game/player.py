@@ -60,9 +60,9 @@ class Player:
         # Process the card and apply any effect.
         played_card = current_source.pop(choice)
         game.discard_pile.append(played_card)
+        self._refill_hand(game.deck)
         _ = self._apply_effect_if_any(game, candidate)
 
-        self._refill_hand(game.deck)
         return played_card
 
     def _refill_hand(self, deck):
@@ -111,6 +111,7 @@ class Player:
         played_two = current_source.pop(choice)
         game.discard_pile.append(played_two)
         self.output_fn(f"Played card: {str(game.get_actual_top_card())}")
+        self._refill_hand(game.deck)
         
         if not self.hand and not self.face_up_cards and not self.face_down_cards:
             return played_two
